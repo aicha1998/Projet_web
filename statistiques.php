@@ -1,3 +1,17 @@
+<?php 
+//index.php
+$connect = mysqli_connect("localhost", "root", "", "wapi");
+$query = "SELECT * FROM commande";
+$result = mysqli_query($connect, $query);
+$chart_data = '';
+while($row = mysqli_fetch_array($result))
+{
+ $chart_data .= "{ idCommande:'".$row["idCommande"]."', montantCommande:".$row["montantCommande"]."}, ";
+}
+$chart_data = substr($chart_data, 0, -2);
+?>
+ 
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -18,7 +32,7 @@
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Supprimer une commande </title>
+    <title>gestion des commandes </title>
 
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
@@ -41,7 +55,12 @@
     <!-- Main CSS-->
     <link href="css/theme.css" rel="stylesheet" media="all">
 
-
+<title>chart with PHP & Mysql | lisenme.com </title>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+  
    
 
 </head>
@@ -86,7 +105,7 @@
                                 <i class="fas fa-table"></i>Gestion des produits</a>
                         </li>
                         <li>
-                            <a href="gestion des commandes.html">
+                            <a href="historiques.php">
                                 <i class="far fa-check-square"></i>Gestion des commandes</a>
                         </li>
                         <li>
@@ -120,7 +139,7 @@
         <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
                 <a href="#">
-                    <h1><b>Wapi</b></h1>
+                   <h1>Wapi</h1>
                 </a>
             </div>
             <div class="menu-sidebar__content js-scrollbar1">
@@ -145,8 +164,10 @@
                                 <i class="fas fa-th-list"></i>Gestions des produits</a>
                         </li>
                         <li>
-                            <a href="gestion des commandes.html">
+                            <a href="historique.php">
                                 <i class="fas fa-shopping-cart"></i>Gestions des commandes</a>
+                                
+
                         </li>
                         <li>
                             <a href="#">
@@ -202,20 +223,20 @@
                                            
                                         </div>
                                         <div class="content">
-                                            <a class="js-acc-btn" href="#">Islam Oueslati</a>
+                                            <a class="js-acc-btn" href="#">Islem Oueslati</a>
                                         </div>
                                         <div class="account-dropdown js-dropdown">
                                             <div class="info clearfix">
                                                 <div class="image">
                                                     <a href="#">
-                                                       
+                                                        
                                                     </a>
                                                 </div>
                                                 <div class="content">
                                                     <h5 class="name">
-                                                        <a href="#">Islam Oueslati</a>
+                                                        <a href="#"></a>
                                                     </h5>
-                                                    <span class="email">IslamOueslati@example.com</span>
+                                                    <span class="email"></span>
                                                 </div>
                                             </div>
                                             <div class="account-dropdown__body">
@@ -255,68 +276,15 @@
 
 
 
-
-<form style="text-align:center;" method="POST" action="supprimercommande.php" enctype="multipart/form-data">									
-
-    <div >
-                        <div class="form-group">
-                <label>Id com</label>
-                <div >
-                        <input type="number" name="idCom" placeholder="" autofocus="" required="" attern="[0-9]{4}">
-                </div>
-            </div>
-
-            <div>
-                <label >Nom Produit</label>
-                <div >
-                        <input type="text" name="nomproduit" placeholder="xxxxxxxxxxxxxx" required="" pattern="[a-zA-Z]{3,12}">
-                </div>
-            </div>
-
-            <div >
-                <label >Date </label>
-                <div >
-                        <input type="date" name="dateEmis" required="">
-                </div>
-            </div>
-
-            <div >
-                <label > Etat</label>
-                <div>
-                        <input type="text" name="EtatCom" placeholder="" required="" pattern="[a-zA-Z]{4,8}" >
-                </div>
-            </div>
-
-            <div >
-                    <label>email </label>
-                    <div >
-                            <input type="text" name="email" placeholder="prenomnom@gmail.com" required="" pattern="[a-zA-Z]*[a-zA-Z]*@gmail.com">
-                    </div>
-                </div>
-                <br>
-                <br>
-               <div >
-                    <label>prix </label>
-                    <div >
-                            <input placeholder="000.000DT" autofocus="" required="" attern="[0-9]{4}" type="number" name="prix">
-                    </div>
-                </div>
-                <br>
-                <br>
-                <br>
-                <br>
-                <div class="form-group">
-                        <input class="btn btn-primary" type="submit" name="Supprimer" value="Supprimer">
-
-                </div>
-                
-                
-
-            </form>
-
-</fieldset>
- 
-   
+								
+					
+<br /><br />
+  <div class="container" style="width:900px;">
+   <h2 align="center" style="color:blue">Voici les statistiques</h2>
+   <h3 align="center" style="color:blue">des commandes selon le montant total </h3>   
+   <br /><br />
+   <div id="chart"></div>
+  </div>
   <!-- <script> 
 function myFunction() {
   alert("Votre Produit a été ajouté !");
@@ -353,3 +321,15 @@ function myFunction() {
 
 </html>
 <!-- end document-->
+<script>
+Morris.Bar({
+ element : 'chart',
+ data:[<?php echo $chart_data; ?>],
+ xkey:'idCommande',
+ ykeys:['profit', 'montantCommande'],
+ labels:['idCommande', 'montantCommande' ],
+ hideHover:'auto',
+ stacked:true
+});
+</script>
+

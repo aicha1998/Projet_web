@@ -1,4 +1,3 @@
-
 <html lang="en">
 
 <head>
@@ -19,7 +18,7 @@
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Ajouter une categorie </title>
+    <title>Ajouter une commande </title>
 
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
@@ -121,7 +120,7 @@
         <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
                 <a href="#">
-                    <img src="images/icon/logo.png" alt="Cool Admin" />
+                    <h1><b>Wapi</b></h1>
                 </a>
             </div>
             <div class="menu-sidebar__content js-scrollbar1">
@@ -146,7 +145,7 @@
                                 <i class="fas fa-th-list"></i>Gestions des produits</a>
                         </li>
                         <li>
-                            <a href="form.html">
+                            <a href="gestion des commandes.html">
                                 <i class="fas fa-shopping-cart"></i>Gestions des commandes</a>
                         </li>
                         <li>
@@ -200,23 +199,23 @@
                                 <div class="account-wrap">
                                     <div class="account-item clearfix js-item-menu">
                                         <div class="image">
-                                            <img src="images/ach" alt="islam" />
+                                            
                                         </div>
                                         <div class="content">
-                                            <a class="js-acc-btn" href="#">Islam Ouselati </a>
+                                            <a class="js-acc-btn" href="#">Islem Ousleti</a>
                                         </div>
                                         <div class="account-dropdown js-dropdown">
                                             <div class="info clearfix">
                                                 <div class="image">
                                                     <a href="#">
-                                                        <img src="images/ach" alt="islam" />
+                                                        <img src="images/icon/avatar-01.jpg" alt="John Doe" />
                                                     </a>
                                                 </div>
                                                 <div class="content">
                                                     <h5 class="name">
-                                                        <a href="#">Islam Oueslati</a>
+                                                        <a href="#">Islem Ouesleti</a>
                                                     </h5>
-                                                    <span class="email">johndoe@example.com</span>
+                                                    <span class="email">IslemOuesleti@gmail.com</span>
                                                 </div>
                                             </div>
                                             <div class="account-dropdown__body">
@@ -257,59 +256,68 @@
 
 
 
-<form  style ="text-align:center ; "method="POST" action="ajoutCategorie.php" enctype="multipart/form-data">									
+<form style="text-align:center;" method="POST" action="ajoutcommande.php" enctype="multipart/form-data">									
 
     <div >
-                        <divclass="form-group">
-                <label>Nom de la categorie</label>
+                        <div class="form-group">
+                <label>Id com</label>
                 <div >
-                        <input type="text" name="nomcategorie">
+                        <input type="number" name="idCom" placeholder="" autofocus="" required="" attern="[0-9]{4}">
                 </div>
             </div>
 
             <div>
-                <label >Sous Categorie</label>
+                <label >Nom Produit</label>
                 <div >
-                        <input type="text" name="souscat">
+                        <input type="text" name="nomproduit" placeholder="xxxxxxxxxxxxxx" required="" pattern="[a-zA-Z]{3,12}">
                 </div>
             </div>
 
-            
+            <div >
+                <label >Date </label>
+                <div >
+                        <input type="date" name="dateEmis" required="">
+                </div>
+            </div>
+
+            <div >
+                <label > Etat</label>
+                <div>
+                        <input type="text" name="EtatCom" placeholder="annulée/délivrée/En cours" required="" pattern="[a-zA-Z]{4,8}">
+                        
+                </div>
+            </div>
+
+            <div >
+                    <label>email </label>
+                    <div >
+                            <input type="text" name="email" placeholder="prenomnom@gmail.com" required="" pattern="[a-zA-Z]*[a-zA-Z]*@gmail.com">
+                    </div>
+                </div>
                 <br>
                 <br>
-               
-                <form method="get" action="Gestions%20des%20produits.html" onsubmit="test();" style="text-align: center;" > <button class="au-btn au-btn-icon au-btn--green au-btn--small">
-                                          <center>  Ajouter la categorie </center></button></form>
+               <div >
+                    <label>prix </label>
+                    <div >
+                            <input placeholder="000.000DT" autofocus="" required="" attern="[0-9]{4}" type="number" name="prix">
+                    </div>
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <div class="form-group" style="align=center">
+                        <input class="btn btn-primary" type="submit" style="background-color:color:rgb(50, 66, 115);" name="Ajouter" value="Ajouter">
 
-
-</tr>
-</table>
-</form>
-
-
-</fieldset>
- 
-  
+                </div>
+                
+                
 
             </form>
 
 </fieldset>
-  <script >
-    function test()
-{
-   
-var id =f.id.value;
-var description = f.description.value ;
-
-if( id.length== 0 || description.length==0  )
-{
-alert("veuillez repmlir tous les champs ");
-
-}
-}
  
-</script>
-
+   
   <!-- <script> 
 function myFunction() {
   alert("Votre Produit a été ajouté !");

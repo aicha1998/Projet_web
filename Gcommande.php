@@ -1,3 +1,17 @@
+<?PHP
+include_once "../Entities/produit.php";
+include_once "../Core/produitC.php";
+include_once "../Core/commandeC.php";
+include_once "../Entities/commande.php";
+session_start();
+$_SESSION['id']=2;
+if(isset($_SESSION['id']))
+{
+
+$commande1C=new commandeC();
+$commandes=$commande1C->recuperercommandes();
+?>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -18,7 +32,7 @@
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Supprimer une commande </title>
+    <title>gestion des commandes </title>
 
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
@@ -54,7 +68,7 @@
                 <div class="container-fluid">
                     <div class="header-mobile-inner">
                         <a class="logo" href="index.html">
-                            <img src="images/icon/logo.png" alt="CoolAdmin" />
+                            <h1>Wapi</h1>
                         </a>
                         <button class="hamburger hamburger--slider" type="button">
                             <span class="hamburger-box">
@@ -86,7 +100,7 @@
                                 <i class="fas fa-table"></i>Gestion des produits</a>
                         </li>
                         <li>
-                            <a href="gestion des commandes.html">
+                            <a href="Gcommande.php">
                                 <i class="far fa-check-square"></i>Gestion des commandes</a>
                         </li>
                         <li>
@@ -120,7 +134,7 @@
         <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
                 <a href="#">
-                    <h1><b>Wapi</b></h1>
+                  <h1>Wapi</h1>
                 </a>
             </div>
             <div class="menu-sidebar__content js-scrollbar1">
@@ -145,8 +159,10 @@
                                 <i class="fas fa-th-list"></i>Gestions des produits</a>
                         </li>
                         <li>
-                            <a href="gestion des commandes.html">
+                            <a href="Gcommande.php">
                                 <i class="fas fa-shopping-cart"></i>Gestions des commandes</a>
+                                
+
                         </li>
                         <li>
                             <a href="#">
@@ -202,20 +218,20 @@
                                            
                                         </div>
                                         <div class="content">
-                                            <a class="js-acc-btn" href="#">Islam Oueslati</a>
+                                            <a class="js-acc-btn" href="#">Islem Oueslati</a>
                                         </div>
                                         <div class="account-dropdown js-dropdown">
                                             <div class="info clearfix">
                                                 <div class="image">
                                                     <a href="#">
-                                                       
+                                                      
                                                     </a>
                                                 </div>
                                                 <div class="content">
                                                     <h5 class="name">
-                                                        <a href="#">Islam Oueslati</a>
+                                                        <a href="#">Islem Oueslati</a>
                                                     </h5>
-                                                    <span class="email">IslamOueslati@example.com</span>
+                                                    <span class="email"></span>
                                                 </div>
                                             </div>
                                             <div class="account-dropdown__body">
@@ -254,70 +270,113 @@
 
 
 
+<table class="table table-bordered table-striped mb-none"  id="myTable2" data-swf-path="assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls_pdf.swf">
+							<thead>
+								<tr>
+													<th style="color:rgb(44, 172, 171)">ID client</th>
+													<th style="color:rgb(44, 172, 171)">ID commande</th>
+													<th style="color:rgb(44, 172, 171)">Contenu</th>
+													<th style="color:rgb(44, 172, 171)">Date commande</th>
+													<th style="color:rgb(44, 172, 171)">Total</th>
+													<th style="color:rgb(44, 172, 171)">Adresse</th>
+													<th style="color:rgb(44, 172, 171)">Valider</th>
+													<th style="color:rgb(44, 172, 171)">Annulee</th>
+													<th style="color:rgb(44, 172, 171)">PDF</th>
+												</tr>
+												 <?php foreach ($commandes as $row)
+                                     {
+                                    ?>
+									
+                                    <tr>
+
+                                        <td><?php echo $row["idClient"] ; ?></td>
+                                        <td><?php echo $row["idCommande"] ; ?></a></td>
+
+                                        <td>
+
+											  <form method="POST" action="affichercontenucommande.php">
+											        <button name="contenu" ><img src="images/eyes.png"></button>
+											        <input type="hidden" value="<?PHP echo $row['idCommande']; ?>" name="idCommande">
+											  </form> 										    
+										  </td>
+
+                                        <td><?php echo $row["dateCommande"] ; ?></td>
+                                        <td><?php echo $row["montantCommande"]." TND" ; ?></td>
+                                        
+                                        <td><?php echo $row["lieuLivraison"] ; ?></td>
+                                       
+                                                  
+
+										  <td>
+
+											  <form method="POST" action="validercommande.php">
+											        <button name="valider" ><img src="images/valider.png"></button>
+											        <input type="hidden" value="<?PHP echo $row['idCommande']; ?>" name="idCommande">
+											  </form> 	
+
+										  <td> 
+											  <form method="POST" action="supprimercommande.php">
+											        <button name="supprimer" ><img src="images/Corbeille1.png"></button>
+											        <input type="hidden" value="<?PHP echo $row['idCommande']; ?>" name="idCommande">
+											  </form> 
+											  
+											    
+											  </td>
+											   <td>
+											     
+											        <form method="POST" action="imprimer.php">
+       	                                        <button name="imprimer" ><img src="images/shredder.png"></button>
+		   
+                                                  </form>
+												  
+												  
+												  </td>
+												  
+											  
+											  
+										  </td>
+										  
+										  
+
+										  
+										  </tr>
+                                        
+
+       </form>
+                               </tr>
+							   
+									
+                                    <?php } ?>
+</thead>
 
 
-<form style="text-align:center;" method="POST" action="supprimercommande.php" enctype="multipart/form-data">									
 
-    <div >
-                        <div class="form-group">
-                <label>Id com</label>
-                <div >
-                        <input type="number" name="idCom" placeholder="" autofocus="" required="" attern="[0-9]{4}">
-                </div>
-            </div>
 
-            <div>
-                <label >Nom Produit</label>
-                <div >
-                        <input type="text" name="nomproduit" placeholder="xxxxxxxxxxxxxx" required="" pattern="[a-zA-Z]{3,12}">
-                </div>
-            </div>
 
-            <div >
-                <label >Date </label>
-                <div >
-                        <input type="date" name="dateEmis" required="">
-                </div>
-            </div>
 
-            <div >
-                <label > Etat</label>
-                <div>
-                        <input type="text" name="EtatCom" placeholder="" required="" pattern="[a-zA-Z]{4,8}" >
-                </div>
-            </div>
-
-            <div >
-                    <label>email </label>
-                    <div >
-                            <input type="text" name="email" placeholder="prenomnom@gmail.com" required="" pattern="[a-zA-Z]*[a-zA-Z]*@gmail.com">
-                    </div>
-                </div>
-                <br>
-                <br>
-               <div >
-                    <label>prix </label>
-                    <div >
-                            <input placeholder="000.000DT" autofocus="" required="" attern="[0-9]{4}" type="number" name="prix">
-                    </div>
-                </div>
-                <br>
-                <br>
-                <br>
-                <br>
-                <div class="form-group">
-                        <input class="btn btn-primary" type="submit" name="Supprimer" value="Supprimer">
-
-                </div>
-                
-                
-
-            </form>
-
-</fieldset>
- 
-   
-  <!-- <script> 
+										</tr>
+									</tbody>
+									
+									
+									
+									
+									
+					</table>
+								<form  action="statistiques.php">
+       	                                          <button name="statistiques" ><img src="images/poll.png"></button>
+		                        </form><form  action="historique.php">
+       	                                          <button name="historiques">Historiques</button>
+		                        </form>
+								
+								
+								
+												  
+												  
+												 
+												  
+												  												  
+</td>
+<!-- <script> 
 function myFunction() {
   alert("Votre Produit a été ajouté !");
   window.location="/Gestions%20des%20produits.html";
@@ -353,3 +412,6 @@ function myFunction() {
 
 </html>
 <!-- end document-->
+<?php
+  }
+?>

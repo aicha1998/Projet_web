@@ -1,3 +1,18 @@
+<?PHP
+include_once "../entities/produit.php";
+include_once "../core/produitC.php";
+include_once "../core/commandeC.php";
+include_once "../entities/commande.php";
+session_start();
+$_SESSION['id']=2;
+if(isset($_SESSION['id']))
+{
+
+$commande1C=new commandeC();
+$commandes=$commande1C->recupererhistorique();
+
+?>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -18,7 +33,7 @@
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Supprimer une commande </title>
+    <title>Historique des commandes </title>
 
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
@@ -53,9 +68,7 @@
             <div class="header-mobile__bar">
                 <div class="container-fluid">
                     <div class="header-mobile-inner">
-                        <a class="logo" href="index.html">
-                            <img src="images/icon/logo.png" alt="CoolAdmin" />
-                        </a>
+                        <h1>wapi</h1>
                         <button class="hamburger hamburger--slider" type="button">
                             <span class="hamburger-box">
                                 <span class="hamburger-inner"></span>
@@ -86,7 +99,7 @@
                                 <i class="fas fa-table"></i>Gestion des produits</a>
                         </li>
                         <li>
-                            <a href="gestion des commandes.html">
+                            <a href="Gcommande.php">
                                 <i class="far fa-check-square"></i>Gestion des commandes</a>
                         </li>
                         <li>
@@ -120,7 +133,7 @@
         <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
                 <a href="#">
-                    <h1><b>Wapi</b></h1>
+                    <h1>Wapi</h1>
                 </a>
             </div>
             <div class="menu-sidebar__content js-scrollbar1">
@@ -145,7 +158,7 @@
                                 <i class="fas fa-th-list"></i>Gestions des produits</a>
                         </li>
                         <li>
-                            <a href="gestion des commandes.html">
+                            <a href="Gcommande.php">
                                 <i class="fas fa-shopping-cart"></i>Gestions des commandes</a>
                         </li>
                         <li>
@@ -202,20 +215,20 @@
                                            
                                         </div>
                                         <div class="content">
-                                            <a class="js-acc-btn" href="#">Islam Oueslati</a>
+                                            <a class="js-acc-btn" href="#">Islem Ouslati</a>
                                         </div>
                                         <div class="account-dropdown js-dropdown">
                                             <div class="info clearfix">
                                                 <div class="image">
                                                     <a href="#">
-                                                       
+                                                     
                                                     </a>
                                                 </div>
                                                 <div class="content">
                                                     <h5 class="name">
-                                                        <a href="#">Islam Oueslati</a>
+                                                        <a href="#">Islem Ouslati</a>
                                                     </h5>
-                                                    <span class="email">IslamOueslati@example.com</span>
+                                                    <span class="email"></span>
                                                 </div>
                                             </div>
                                             <div class="account-dropdown__body">
@@ -254,69 +267,45 @@
 
 
 
+<table class="table table-bordered table-striped mb-none"  id="myTable2" data-swf-path="assets/vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls_pdf.swf">
+							<thead>
+								<tr>
+													<th style="color:rgb(44, 172, 171)">ID client</th>
+													<th style="color:rgb(44, 172, 171)">ID commande</th>
+													<th style="color:rgb(44, 172, 171)">Date</th>
+													<th style="color:rgb(44, 172, 171)">Montant</th>
+													<th style="color:rgb(44, 172, 171)">Etat</th>
+													<th style="color:rgb(44, 172, 171)">Adresse</th>
+												</tr>
+												<?PHP
+foreach($commandes as $row)
+{
+  ?>
+  <tr>
+  <td><?PHP echo $row['idClient']; ?></td>
+  <td><?PHP echo $row['idCommande']; ?></td>
+  <td><?PHP echo $row['dateCommande']; ?></td>
+  <td><?PHP echo $row['montantCommande']." TND" ; ?></td>
+  <td><?PHP echo $row['etatCommande']; ?></td>
+  <td><?PHP echo $row['lieuLivraison']; ?></td>
+
+</tr>
+  
+  <?PHP
+}
+?>
+</thead>
 
 
-<form style="text-align:center;" method="POST" action="supprimercommande.php" enctype="multipart/form-data">									
 
-    <div >
-                        <div class="form-group">
-                <label>Id com</label>
-                <div >
-                        <input type="number" name="idCom" placeholder="" autofocus="" required="" attern="[0-9]{4}">
-                </div>
-            </div>
 
-            <div>
-                <label >Nom Produit</label>
-                <div >
-                        <input type="text" name="nomproduit" placeholder="xxxxxxxxxxxxxx" required="" pattern="[a-zA-Z]{3,12}">
-                </div>
-            </div>
 
-            <div >
-                <label >Date </label>
-                <div >
-                        <input type="date" name="dateEmis" required="">
-                </div>
-            </div>
 
-            <div >
-                <label > Etat</label>
-                <div>
-                        <input type="text" name="EtatCom" placeholder="" required="" pattern="[a-zA-Z]{4,8}" >
-                </div>
-            </div>
+										</tr>
+									</tbody>
+								</table>
+					
 
-            <div >
-                    <label>email </label>
-                    <div >
-                            <input type="text" name="email" placeholder="prenomnom@gmail.com" required="" pattern="[a-zA-Z]*[a-zA-Z]*@gmail.com">
-                    </div>
-                </div>
-                <br>
-                <br>
-               <div >
-                    <label>prix </label>
-                    <div >
-                            <input placeholder="000.000DT" autofocus="" required="" attern="[0-9]{4}" type="number" name="prix">
-                    </div>
-                </div>
-                <br>
-                <br>
-                <br>
-                <br>
-                <div class="form-group">
-                        <input class="btn btn-primary" type="submit" name="Supprimer" value="Supprimer">
-
-                </div>
-                
-                
-
-            </form>
-
-</fieldset>
- 
-   
   <!-- <script> 
 function myFunction() {
   alert("Votre Produit a été ajouté !");
@@ -353,3 +342,6 @@ function myFunction() {
 
 </html>
 <!-- end document-->
+<?php
+  }
+?>
