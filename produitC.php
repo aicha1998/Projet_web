@@ -1,13 +1,13 @@
 <?php
-include "../config.php";
+include_once "../config.php";
 
 
 class produitC
 {
 
-	function ajouteraupanier($produit,$idClient)
+	function ajouteraupanier($produit)
 	{
-		$sql="insert into panier (id,idClient,prix,quantite,nom) values (:id,:idClient,:prix,:quantite,:nom)";
+		$sql="insert into panier (id,prix,quantite) values (:id,:prix,:quantite)";
 		$db = config::getConnexion();
 		
 		try
@@ -16,16 +16,12 @@ class produitC
         $id=$produit->get_id();
         $prix=$produit->get_prix();
         $quantite=$produit->get_quantite();
-        $nom=$produit->get_nom();
 
         $req=$db->prepare($sql);
      
 		$req->bindValue(':id',$id);
-		$req->bindValue(':idClient',$idClient);
 		$req->bindValue(':prix',$prix);
 		$req->bindValue(':quantite',$quantite);
-		$req->bindValue(':nom',$nom);
-
 		
         $req->execute();
            
@@ -33,30 +29,12 @@ class produitC
 
         catch (Exception $e)
         {
-            echo "<script>alert(\"Le produit est déja dans votre panier.\")</script>"; 
+            echo 'Erreur: '.$e->getMessage();
         }
 
 	}
 
-	function recupererproduit()
-	{
-   		$sql="SELECT * from produit ";
-		$db = config::getConnexion();
-		
-		try
-		{
-		$liste=$db->query($sql);
-		$liste->execute();
-		return $liste;
-		}
-        catch (Exception $e)
-        {
-            die('Erreur: '.$e->getMessage());
-        }
-	}
-   
-   
-   function recupererproduit_ajout($id)
+	function recupererproduit($id)
 	{
    		$sql="SELECT * from produit where id=$id";
 		$db = config::getConnexion();
@@ -73,43 +51,9 @@ class produitC
         }
 	}
 
-	function recupererpanier($idClient)
+	function recupererpanier()
 	{
-   		$sql="SELECT * from panier where idClient=$idClient";
-		$db = config::getConnexion();
-		
-		try
-		{
-		$liste=$db->query($sql);
-		$liste->execute();
-		return $liste;
-		}
-        catch (Exception $e)
-        {
-            die('Erreur: '.$e->getMessage());
-        }
-	}
-
-	function recupererwishlist()
-	{
-		$sql="SELECT * from wishlist";
-		$db = config::getConnexion();
-		
-		try
-		{
-		$liste=$db->query($sql);
-		$liste->execute();
-		return $liste;
-		}
-        catch (Exception $e)
-        {
-            die('Erreur: '.$e->getMessage());
-        }
-	}
-
-	function recupererproduitwishlist($id)
-	{
-		$sql="SELECT * from wishlist where id=$id";
+   		$sql="SELECT * from panier";
 		$db = config::getConnexion();
 		
 		try
@@ -157,24 +101,24 @@ class produitC
         }	
 	}
 
-	function supprimerproduit($id,$idClient)
+	function supprimerproduit($id)
 	{
-		$sql="DELETE FROM panier where id= :id AND idClient= :idClient";
+		$sql="DELETE FROM panier where id= :id";
 		$db = config::getConnexion();
         $req=$db->prepare($sql);
 		$req->bindValue(':id',$id);
-		$req->bindValue(':idClient',$idClient);
 		try{
             $req->execute();
+           // header('Location: index.php');
         }
         catch (Exception $e){
             die('Erreur: '.$e->getMessage());
         }
 	}
 
-	function modifierquantite($id,$quantite,$idClient)
+	function updatequantite($id,$quantite,$idClient)
 	{
-		$sql="UPDATE panier SET quantite=:quantite where id=:id AND idClient= :idClient";
+		$sql="UPDATE produit SET quantite=:quantite where id=:id AND idClient= :idClient";
 		$db = config::getConnexion();
         
         try
@@ -194,90 +138,60 @@ class produitC
         }
 	}
 
-
-	function verifierexitenceprod($idClient,$id)
+	function modifierquantite($id,$quantite)
 	{
-		$sql="select count(*) as cnt from panier where idClient=:idClient and id=:id";
+		$sql="UPDATE panier SET quantite=:quantite where id=:id";
 		$db = config::getConnexion();
-        $req=$db->prepare($sql);
-		$req->bindValue(':idClient',$idClient);
-		$req->bindValue(':id',$id);
-		try{
-            $req->execute();
-            return $req;
+        
+        try
+        {
+        	$req=$db->prepare($sql);
+        	$req->bindValue(':id',$id);
+        	$req->bindValue(':quantite',$quantite);
+        	$s=$req->execute();
+
         }
         catch (Exception $e)
         {
-            die('Erreur: '.$e->getMessage());
+            echo " Erreur ! ".$e->getMessage();
+   			echo " Les datas : " ;
+  			print_r($datas);
         }
 	}
-	function verifierexitenceprod1($idClient,$id)
+
+	function countpanier()
 	{
-		$sql="select count(*) as cnt from wishlist where idClient=:idClient and id=:id";
 		$db = config::getConnexion();
-        $req=$db->prepare($sql);
-		$req->bindValue(':idClient',$idClient);
-		$req->bindValue(':id',$id);
-		try{
-            $req->execute();
-            return $req;
-        }
-        catch (Exception $e)
-        {
-            die('Erreur: '.$e->getMessage());
-        }
+		$q=$db->prepare("select count(*) as cnt from panier");
+		$q->execute();
+		return $q;
 	}
 
-
-	function countpanier($idClient)
+	function ajouterwishlist($produit)
 	{
-		$sql="select count(*) as cnt from panier where idClient=:idClient";
-		$db = config::getConnexion();
-        $req=$db->prepare($sql);
-		$req->bindValue(':idClient',$idClient);
-		try{
-            $req->execute();
-            return $req;
-        }
-        catch (Exception $e)
-        {
-            die('Erreur: '.$e->getMessage());
-        }
-	}
-
-
-	function ajouterwishlist($produit,$idClient)
-	{
-		$sql="insert into wishlist (id,idClient,nom,prix,quantite) values (:id,:idClient,:nom,:prix,:quantite)";
+		$sql="insert into wishlist (id,prix,quantite) values (:id,:prix,:quantite)";
 		$db = config::getConnexion();
 		
 		try
 		{
        
         $id=$produit->get_id();
-        $nom=$produit->get_nom();
         $prix=$produit->get_prix();
         $quantite=$produit->get_quantite();
-        
 
         $req=$db->prepare($sql);
      
 		$req->bindValue(':id',$id);
-		$req->bindValue(':idClient',$idClient);
-		$req->bindValue(':nom',$nom);
-		
 		$req->bindValue(':prix',$prix);
 		$req->bindValue(':quantite',$quantite);
 		
-
-		
         $req->execute();
-           
+        //echo "LOL";    
         }
 
         catch (Exception $e)
         {
-            echo "<script>alert(\"Le produit est déja dans votre favorit.\")</script>"; 
+            echo 'Erreur: '.$e->getMessage();
         }
 
 	}
@@ -298,82 +212,15 @@ class produitC
         }	
 	}
 
-	function supprimerwishlist($id,$idClient)
+	function supprimerwishlist($id)
 	{
-		$sql="DELETE FROM wishlist where id= :id and idClient=:idClient";
+		$sql="DELETE FROM wishlist where id= :id";
 		$db = config::getConnexion();
         $req=$db->prepare($sql);
 		$req->bindValue(':id',$id);
-		$req->bindValue(':idClient',$idClient);
 		try{
             $req->execute();
-        }
-        catch (Exception $e){
-            die('Erreur: '.$e->getMessage());
-        }
-	}
-
-	function ajoutercontenupanier($produit,$idCommande,$idClient)
-	{
-		$sql="insert into lignecommande (idCommande,id,idClient,prix,quantite,nom) values (:idCommande,:id,:idClient,:prix,:quantite,:nom)";
-		$db = config::getConnexion();
-		
-		try
-		{
-       
-        $id=$produit->get_id();
-        $prix=$produit->get_prix();
-        $quantite=$produit->get_quantite();
-        $nom=$produit->get_nom();
-
-        $req=$db->prepare($sql);
-     
-     	$req->bindValue(':idCommande',$idCommande);
-		$req->bindValue(':idClient',$idClient);
-		$req->bindValue(':id',$id);
-		$req->bindValue(':prix',$prix);
-		$req->bindValue(':quantite',$quantite);
-		$req->bindValue(':nom',$nom);
-
-		
-        $req->execute();
-           
-        }
-
-        catch (Exception $e)
-        {
-            echo "<script>alert(\"Error\")</script>"; 
-        }
-
-	}
-	function modifierquantiteaprescommande($id,$quantite)
-	{
-		$sql="UPDATE produit SET quantite=quantite-:quantite where id=:id";
-		$db = config::getConnexion();
-        
-        try
-        {
-        	$req=$db->prepare($sql);
-        	$req->bindValue(':id',$id);
-        	$req->bindValue(':quantite',$quantite);
-        	$s=$req->execute();
-
-        }
-        catch (Exception $e)
-        {
-            echo " Erreur ! ".$e->getMessage();
-   			echo " Les datas : " ;
-  			print_r($datas);
-        }
-	}
-	function destroycart($idClient)
-	{
-		$sql="DELETE FROM panier where idClient=:idClient";
-		$db = config::getConnexion();
-        $req=$db->prepare($sql);
-		$req->bindValue(':idClient',$idClient);
-		try{
-            $req->execute();
+           // header('Location: index.php');
         }
         catch (Exception $e){
             die('Erreur: '.$e->getMessage());

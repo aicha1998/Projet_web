@@ -3,15 +3,16 @@ include_once "../config.php";
 
 class commandeC
 {
+	
 	function ajoutercommande($commande)
 	{
-		$sql="insert into commande (dateCommande,montantCommande,etatCommande,lieuLivraison,prixLivraison,idClient) values (:dateCommande,:montantCommande,:etatCommande,:lieuLivraison,:prixLivraison,:idClient)";
+		$sql="insert into commande (idCommande,dateCommande,montantCommande,etatCommande,lieuLivraison,prixLivraison,idClient) values (:idCommande,:dateCommande,:montantCommande,:etatCommande,:lieuLivraison,:prixLivraison,:idClient)";
 		$db = config::getConnexion();
 		
 		try
 		{
        
-        //$idCommande=$commande->get_idCommande();
+        $idCommande=$commande->get_idCommande();
         $dateCommande=$commande->get_dateCommande();
         $montantCommande=$commande->get_montantCommande();
         $etatCommande=$commande->get_etatCommande();
@@ -21,7 +22,7 @@ class commandeC
 
         $req=$db->prepare($sql);
      
-		//$req->bindValue(':idCommande',$idCommande);
+		$req->bindValue(':idCommande',$idCommande);
 		$req->bindValue(':dateCommande',$dateCommande);
 		$req->bindValue(':montantCommande',$montantCommande);
 		$req->bindValue(':etatCommande',$etatCommande);
@@ -40,25 +41,46 @@ class commandeC
 
 	}
 
-	function recuperercommande($idClient)
+	function ajouterhistorique($commande)
 	{
-   		$sql="SELECT * from historiquecommande where idClient=$idClient";
+		$sql="insert into historiquecommande (idCommande,dateCommande,montantCommande,etatCommande,lieuLivraison,prixlivraison,idClient) values (:idCommande,:dateCommande,:montantCommande,:etatCommande,:lieuLivraison,:prixlivraison,:idClient)";
 		$db = config::getConnexion();
 		
 		try
 		{
-		$liste=$db->query($sql);
-		$liste->execute();
-		return $liste;
-		}
+       
+        $idCommande=$commande->get_idCommande();
+        $dateCommande=$commande->get_dateCommande();
+        $montantCommande=$commande->get_montantCommande();
+        $etatCommande=$commande->get_etatCommande();
+        $lieuLivraison=$commande->get_lieuLivraison();
+        $prixLivraison=$commande->get_prixLivraison();
+        $idClient=$commande->get_idClient();
+
+        $req=$db->prepare($sql);
+     
+		$req->bindValue(':idCommande',$idCommande);
+		$req->bindValue(':dateCommande',$dateCommande);
+		$req->bindValue(':montantCommande',$montantCommande);
+		$req->bindValue(':etatCommande',$etatCommande);
+		$req->bindValue(':lieuLivraison',$lieuLivraison);
+		$req->bindValue(':prixlivraison',$prixLivraison);
+		$req->bindValue(':idClient',$idClient);
+		
+        $req->execute();
+           
+        }
+
         catch (Exception $e)
         {
-            die('Erreur: '.$e->getMessage());
+            echo 'Erreur: '.$e->getMessage();
         }
+
 	}
-	function recuperercommande1($idClient)
+
+	function recuperercommandes()
 	{
-   		$sql="SELECT * from commande  where idClient=$idClient";
+   		$sql="SELECT * from commande";
 		$db = config::getConnexion();
 		
 		try
@@ -73,9 +95,56 @@ class commandeC
         }
 	}
 
-	function recupererdernierID()
+	function recuperercommande($idCommande)
 	{
-		$sql="SELECT MAX(idCommande) as max from commande";
+   		$sql="SELECT * from commande where idCommande=$idCommande";
+		$db = config::getConnexion();
+		
+		try
+		{
+		$liste=$db->query($sql);
+		$liste->execute();
+		return $liste;
+		}
+        catch (Exception $e)
+        {
+            die('Erreur: '.$e->getMessage());
+        }
+	}
+
+	function supprimercommande($idCommande)
+	{
+		$sql="DELETE FROM commande where idCommande= :idCommande";
+		$db = config::getConnexion();
+        $req=$db->prepare($sql);
+		$req->bindValue(':idCommande',$idCommande);
+		try{
+            $req->execute();
+           // header('Location: index.php');
+        }
+        catch (Exception $e){
+            die('Erreur: '.$e->getMessage());
+        }
+	}
+
+	function supprimercontenucommande($idCommande)
+	{
+		$sql="DELETE FROM lignecommande where idCommande= :idCommande";
+		$db = config::getConnexion();
+        $req=$db->prepare($sql);
+		$req->bindValue(':idCommande',$idCommande);
+		try{
+            $req->execute();
+           // header('Location: index.php');
+        }
+        catch (Exception $e){
+            die('Erreur: '.$e->getMessage());
+        }
+	}
+
+	function recupererhistorique()
+	{
+   		$sql="SELECT * from historiquecommande";
 		$db = config::getConnexion();
 		
 		try
@@ -106,21 +175,27 @@ class commandeC
             die('Erreur: '.$e->getMessage());
         }
 	}
+	function trier(){
+        
+        
+       $db = config::getConnexion();
+            $sql="SElECT * From commande ORDER BY montantCommande";
 
-	function notification($idClient)
-	{
-		$sql="SELECT count(*) as cnt from historiquecommande where idClient=:idClient and etatCommande='Validee' ";
-		$db = config::getConnexion();
+        try{
         $req=$db->prepare($sql);
-		$req->bindValue(':idClient',$idClient);
-		try{
-            $req->execute();
-            return $req;
+        $req->execute();
+        $commande= $req->fetchALL(PDO::FETCH_OBJ);
+        return $commande;
         }
-        catch (Exception $e)
-        {
+        catch (Exception $e){
             die('Erreur: '.$e->getMessage());
-        }
-	}
+        }    
 }
+	
+
+}
+
+
+
+
 ?>
